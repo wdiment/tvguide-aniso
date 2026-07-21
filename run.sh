@@ -7,11 +7,12 @@
 ### Gunicorn settings can be modified in order to fit system settings as necessary
 
 
-if [[ `basename "$PWD"` != "nsf-dev" ]]; then
-    git clone https://github.com/widi9545/tvguide-aniso
-    mv tvguide-aniso
-    cd nsf-dev
-fi 
+if [[ `basename "$PWD"` != "tvguide-aniso" ]]; then
+    if [[ ! -d "tvguide-aniso" ]]; then
+        git clone https://github.com/widi9545/tvguide-aniso
+    fi
+    cd tvguide-aniso
+fi
 
 export MINIFORGE_LOCATION=$(dirname ${BASH_SOURCE[0]})
 
@@ -27,8 +28,22 @@ if [[ -z `command -v conda` || -z `command -v mamba`  ]]; then
     fi
 fi
 
+### Optional local settings (gitignored): MAPBOX_TOKEN, TVGUIDE_BIND, etc.
+if [ -f "$MINIFORGE_LOCATION/.env" ]; then
+    set -a
+    source "$MINIFORGE_LOCATION/.env"
+    set +a
+fi
+
 echo "Starting TVGuide-Aniso "
 eval "$(conda shell.bash hook)"
 conda activate $MINIFORGE_LOCATION/tvguide
-pkill -9 gunicorn
-gunicorn -w 3 -t 6 -b 128.138.136.178:8000 tvguide:server
+
+### Stop a previous instance of this app only - not every gunicorn on the machine
+PIDFILE="$MINIFORGE_LOCATION/tvguide.pid"
+if [ -f "$PIDFILE" ]; then
+    kill "$(cat "$PIDFILE")" 2>/dev/null
+    rm -f "$PIDFILE"
+fi
+
+gunicorn -w 3 -t 6 -b "${TVGUIDE_BIND:-0.0.0.0:8000}" --pid "$PIDFILE" tvguide:server
