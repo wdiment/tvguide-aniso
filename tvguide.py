@@ -547,6 +547,41 @@ def average_tensors(n_clicks, numberOfTensorsToAverage, tensor1, tensor2, tensor
   v_ave_string = "{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(V_ave[0],V_ave[1],V_ave[2],V_ave[3],V_ave[4],V_ave[5],V_ave[6],V_ave[7],V_ave[8],V_ave[9],V_ave[10],V_ave[11],V_ave[12],V_ave[13],V_ave[14],V_ave[15],V_ave[16],V_ave[17],V_ave[18],V_ave[19],V_ave[20],V_ave[21],V_ave[22],V_ave[23],V_ave[24],V_ave[25],V_ave[26],V_ave[27],V_ave[28],V_ave[29],V_ave[30],V_ave[31],V_ave[32],V_ave[33],V_ave[34],V_ave[35])
   return v_ave_string
 
+# Maps each velocity tab to its plot type and whether it is a 3D plot
+TAB_PLOT_TYPES = {
+    'tab-1': ('Quiver', False),
+    'tab-2': ('VP', False),
+    'tab-3': ('VS1', False),
+    'tab-4': ('VS2', False),
+    'tab-13': ('VPVS1', False),
+    'tab-5': ('3DQuiver', True),
+    'tab-6': ('3DVP', True),
+    'tab-7': ('3DVS1', True),
+    'tab-8': ('3DVS2', True),
+    'tab-9': ('3DVPVS1', True),
+    'tab-10': ('BackAzimuthal', False),
+    'tab-11': ('RadialPlots', False),
+}
+
+FOLD_TAB_PLOT_TYPES = {
+    'fold-model-tab-1': ('Quiver', False),
+    'fold-model-tab-2': ('VP', False),
+    'fold-model-tab-3': ('VS1', False),
+    'fold-model-tab-4': ('VS2', False),
+    'fold-model-tab-5': ('VPVS1', False),
+    'fold-model-tab-6': ('3DQuiver', True),
+    'fold-model-tab-7': ('3DVP', True),
+    'fold-model-tab-8': ('3DVS1', True),
+    'fold-model-tab-9': ('3DVS2', True),
+    'fold-model-tab-10': ('3DVPVS1', True),
+}
+
+FOLD_GRAPH_STYLE = {'text-align': 'center', 'top': '15px', 'max-height': '1000px', 'min-width': '1600px'}
+
+# Database tensors are numbered 1-96; user-input tensors start at 97
+FIRST_USER_TENSOR = 97
+
+
 @app.callback(
 [Output(component_id='graph-display', component_property='figure'),
 Output(component_id='fold-model-display', component_property='children'),
@@ -560,268 +595,30 @@ State(component_id='database_dataframe_user_input', component_property='children
 ]
 )
 def render_content(folds_tab, tab, button_nclicks, tensor, userInputDataFrame):
-  #optional return - specify the return function parameter
-  #fig1, vpFig, vs1Fig, vs2Fig, vpvs1Fig = vector_functions.calculate_tensor_symmetries(2)
-  tensor = tensor
-  
   changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
   print('this is changed id in the render_content tool', changed_id, 'this is the tab', tab)
-  
-  
-  if tab == None and folds_tab == None:
-    tab = 'tab-2'
 
+  tensor = int(tensor)
+  user_input = tensor >= FIRST_USER_TENSOR
 
-  if tab == 'tab-1' and changed_id != 'fold-model-tabs-div.value':
-    if changed_id == 'tabs-div.value' or changed_id == 'select_tensor.value' or changed_id == 'submit_button.n_clicks':
-      plotType = 'Quiver'
-      if int(tensor) < 96:
-        fig1 = vector_functions.calculate_tensor_symmetries(tensor, False, plotType, None, userInputDataFrame)
-      if int(tensor) >= 96:
-        print('this is the tensor number', tensor)
-        fig1 = vector_functions.calculate_tensor_symmetries(tensor, True, plotType, None, userInputDataFrame)
-    return fig1, '', '', tensor
+  if changed_id == 'fold-model-tabs-div.value' and folds_tab in FOLD_TAB_PLOT_TYPES:
+    plotType, is3D = FOLD_TAB_PLOT_TYPES[folds_tab]
+    fig = vector_functions.tv_fold_model(
+        tensor, user_input,
+        None if is3D else plotType,
+        plotType if is3D else None,
+        userInputDataFrame)
+    foldGraph = html.Div(children=[dcc.Graph(figure=fig)], style=FOLD_GRAPH_STYLE)
+    return '', foldGraph, '', tensor
 
-
-
-  elif tab == 'tab-2' and changed_id != 'fold-model-tabs-div.value': 
-    print('we are in tab-2 section', changed_id)
-    if changed_id == 'tabs-div.value' or changed_id == 'select_tensor.value' or changed_id == 'submit_button.n_clicks':
-      plotType = 'VP'
-      if int(tensor) < 96:
-        fig1 = vector_functions.calculate_tensor_symmetries(tensor, False, plotType, None, userInputDataFrame)
-      if int(tensor) >= 96:
-        print('this is the tensor number', tensor)
-        fig1 = vector_functions.calculate_tensor_symmetries(tensor, True, plotType, None, userInputDataFrame)
-    return fig1, '', '', tensor
-
-
-
-  elif tab == 'tab-3' and changed_id != 'fold-model-tabs-div.value':
-    if changed_id == 'tabs-div.value' or changed_id == 'select_tensor.value' or changed_id == 'submit_button.n_clicks':
-      plotType = 'VS1'
-      if int(tensor) < 96:
-        fig1 = vector_functions.calculate_tensor_symmetries(tensor, False, plotType, None)
-      if int(tensor) >= 96:
-        print('this is the tensor number', tensor)
-        fig1 = vector_functions.calculate_tensor_symmetries(tensor, True, plotType, None, userInputDataFrame)
-    return fig1, '', '', tensor
-
-
-  elif tab == 'tab-4' and changed_id != 'fold-model-tabs-div.value':
-    if changed_id == 'tabs-div.value' or changed_id == 'select_tensor.value' or changed_id == 'submit_button.n_clicks':
-      plotType = 'VS2'
-      if int(tensor) < 96:
-        fig1 = vector_functions.calculate_tensor_symmetries(tensor, False, plotType, None)
-      if int(tensor) >= 96:
-        print('this is the tensor number', tensor)
-        fig1 = vector_functions.calculate_tensor_symmetries(tensor, True, plotType, None, userInputDataFrame)
-    return fig1, '', '', tensor
-
-  elif tab == 'tab-13' and changed_id != 'fold-model-tabs-div.value':
-    if changed_id == 'tabs-div.value' or changed_id == 'select_tensor.value' or changed_id == 'submit_button.n_clicks':
-      plotType = 'VPVS1'
-      if int(tensor) < 96:
-        fig1 = vector_functions.calculate_tensor_symmetries(tensor, False, plotType, None)
-      if int(tensor) >= 96:
-        print('this is the tensor number', tensor)
-        fig1 = vector_functions.calculate_tensor_symmetries(tensor, True, plotType, None, userInputDataFrame)
-    return fig1, '', '', tensor
-
-  elif tab == 'tab-5' and changed_id != 'fold-model-tabs-div.value':
-    if changed_id == 'tabs-div.value' or changed_id == 'select_tensor.value' or changed_id == 'submit_button.n_clicks':
-      plotType = '3DQuiver'
-      if int(tensor) < 96:
-        fig1 = vector_functions.calculate_tensor_symmetries(tensor, False, None, plotType)
-      if int(tensor) >= 96:
-        print('this is the tensor number', tensor)
-        fig1 = vector_functions.calculate_tensor_symmetries(tensor, True, None, plotType, userInputDataFrame)
-
-    return fig1, '', '', tensor
-
-
-  if tab == 'tab-6' and changed_id != 'fold-model-tabs-div.value':
-    if changed_id == 'tabs-div.value' or changed_id == 'select_tensor.value' or changed_id == 'submit_button.n_clicks':
-      plotType = '3DVP'
-      print('yep')
-      if int(tensor) < 96:
-        vpFig = vector_functions.calculate_tensor_symmetries(tensor, False, None, plotType)
-      if int(tensor) >= 96:
-        vpFig = vector_functions.calculate_tensor_symmetries(tensor, True, None, plotType, userInputDataFrame)
-    return vpFig, '', '', tensor
-    
-
-  elif tab == 'tab-7' and changed_id != 'fold-model-tabs-div.value':
-    if changed_id == 'tabs-div.value' or changed_id == 'select_tensor.value' or changed_id == 'submit_button.n_clicks':
-      plotType = '3DVS1'
-      if int(tensor) < 96:
-        vs1Fig = vector_functions.calculate_tensor_symmetries(tensor, False, None, plotType)
-      if int(tensor) >= 96:
-        print(tensor)
-        vs1Fig = vector_functions.calculate_tensor_symmetries(tensor, True, None, plotType, userInputDataFrame)
-
-    return vs1Fig, '', '', tensor
-
-  elif tab == 'tab-8' and changed_id != 'fold-model-tabs-div.value': 
-    print(changed_id)
-    if changed_id == 'tabs-div.value' or changed_id == 'select_tensor.value' or changed_id == 'submit_button.n_clicks':
-      plotType = '3DVS2'
-      if int(tensor) < 96:
-        print('we are in the proper tensor selection', tensor)
-        vs2Fig = vector_functions.calculate_tensor_symmetries(tensor, False,None, plotType)
-      if int(tensor) >= 96:
-        print(tensor)
-        vs2Fig = vector_functions.calculate_tensor_symmetries(tensor, True, None, plotType, userInputDataFrame)
-    return vs2Fig, '', '', tensor
-
-  elif tab == 'tab-9'  and changed_id != 'fold-model-tabs-div.value':
-    if changed_id == 'tabs-div.value' or changed_id == 'select_tensor.value' or changed_id == 'submit_button.n_clicks':
-      plotType = '3DVPVS1'
-      if int(tensor) < 96:
-        vpvs1Fig = vector_functions.calculate_tensor_symmetries(tensor, False,None, plotType)
-      if int(tensor) >= 96:
-        print(tensor)
-        vpvs1Fig = vector_functions.calculate_tensor_symmetries(tensor, True, None, plotType, userInputDataFrame)
-    return vpvs1Fig, '', '', tensor
-
-  elif tab == 'tab-10' and changed_id != 'fold-model-tabs-div.value':
-    if changed_id == 'tabs-div.value' or changed_id == 'select_tensor.value' or changed_id == 'submit_button.n_clicks':
-      plotType = 'BackAzimuthal'
-      print('in backAz')
-      if int(tensor) < 96:
-        BackAzFig = vector_functions.calculate_tensor_symmetries(tensor, False, plotType,  None)
-      if int(tensor) >= 96:
-        BackAzFig = vector_functions.calculate_tensor_symmetries(tensor, True, plotType, None, userInputDataFrame)
-    return BackAzFig, '', '', tensor
-
-  elif tab == 'tab-11' and changed_id != 'fold-model-tabs-div.value':
-    if changed_id == 'tabs-div.value' or changed_id == 'select_tensor.value' or changed_id == 'submit_button.n_clicks':
-      plotType = 'RadialPlots'
-      if int(tensor) < 96:
-        RadFig = vector_functions.calculate_tensor_symmetries(tensor, False, plotType,  None)
-      if int(tensor) >= 96:
-        print(tensor)
-        RadFig = vector_functions.calculate_tensor_symmetries(tensor, True, plotType, None, userInputDataFrame)
-    return RadFig, '', '', tensor
-
-    
-  
- 
-  if changed_id == 'fold-model-tabs-div.value' and folds_tab == 'fold-model-tab-1':
-    plotType = 'Quiver'
-    print('in fold polarization')
-    if int(tensor) <= 96:
-      fig1 = vector_functions.tv_fold_model(tensor, False, plotType, None)
-    if int(tensor) > 96:
-      print('this is the tensor number', tensor)
-      fig1 = vector_functions.tv_fold_model(tensor, True, plotType, None, userInputDataFrame)
-    return '', html.Div(children=[dcc.Graph(figure=fig1)], style={'text-align': 'center', 'top':'15px', 'max-height':'1000px', 'min-width':'1600px'}), '', tensor
-
-  if changed_id == 'fold-model-tabs-div.value' and folds_tab == 'fold-model-tab-2':
-    print('in fold model vp')
-    plotType = 'VP'
-    if int(tensor) <= 96:
-      fig1 = vector_functions.tv_fold_model(tensor, False, plotType, None)
-    if int(tensor) > 96:
-      print('this is the tensor number in VP', tensor)
-      fig1 = vector_functions.tv_fold_model(tensor, True, plotType, None, userInputDataFrame)
-    return '', html.Div(children=[dcc.Graph(figure=fig1)], style={'text-align': 'center', 'top':'15px', 'min-width':'1600px'}), '', tensor
-
-  if changed_id == 'fold-model-tabs-div.value' and folds_tab == 'fold-model-tab-3':
-    print('in vs1 fold tab')
-    plotType = 'VS1'
-    if int(tensor) <= 96:
-      fig1 = vector_functions.tv_fold_model(tensor, False, plotType, None)
-    if int(tensor) > 96:
-      print('this is the tensor number in VS1', tensor)
-      fig1 = vector_functions.tv_fold_model(tensor, True, plotType, None, userInputDataFrame)
-    return '', html.Div(children=[dcc.Graph(figure=fig1)], style={'text-align': 'center', 'top':'15px', 'max-height':'1000px', 'min-width':'1600px'}), '', tensor
-
-
-  if changed_id == 'fold-model-tabs-div.value' and folds_tab == 'fold-model-tab-4':
-    plotType = 'VS2'
-    print('in vs2 fold tab')
-    if int(tensor) <= 96:
-      fig1 = vector_functions.tv_fold_model(tensor, False, plotType, None)
-    if int(tensor) > 96:
-      print('this is the tensor number', tensor)
-      fig1 = vector_functions.tv_fold_model(tensor, True, plotType, None, userInputDataFrame)
-    return '', html.Div(children=[dcc.Graph(figure=fig1)], style={'text-align': 'center', 'top':'15px', 'max-height':'1000px', 'min-width':'1600px'}), '', tensor
-
-
-  if changed_id == 'fold-model-tabs-div.value' and folds_tab == 'fold-model-tab-5':
-    plotType = 'VPVS1'
-    print('in vpvs1 fold tab')
-    if int(tensor) <= 96:
-      fig1 = vector_functions.tv_fold_model(tensor, False, plotType, None)
-    if int(tensor) > 96:
-      print('this is the tensor number', tensor)
-      fig1 = vector_functions.tv_fold_model(tensor, True, plotType, None, userInputDataFrame)
-    return '', html.Div(children=[dcc.Graph(figure=fig1)], style={'text-align': 'center', 'top':'15px', 'max-height':'1000px', 'min-width':'1600px'}), '', tensor
-
-
-  if changed_id == 'fold-model-tabs-div.value' and folds_tab == 'fold-model-tab-6':
-    plotType = '3DQuiver'
-    print('in 3d quiv fold tab')
-    if int(tensor) <= 96:
-      fig1 = vector_functions.tv_fold_model(tensor, False, None, plotType)
-    if int(tensor) > 96:
-      print('this is the tensor number', tensor)
-      fig1 = vector_functions.tv_fold_model(tensor, True, None, plotType, userInputDataFrame)
-    return '', html.Div(children=[dcc.Graph(figure=fig1)], style={'text-align': 'center', 'top':'15px', 'max-height':'1000px', 'min-width':'1600px'}), '', tensor
-
-
-  if changed_id == 'fold-model-tabs-div.value' and folds_tab == 'fold-model-tab-7':
-    print('in 3d vp')
-    plotType = '3DVP'
-    if int(tensor) < 96:
-      fig1 = vector_functions.tv_fold_model(tensor, False, None, plotType)
-    if int(tensor) >= 96:
-      print('this is the tensor number', tensor)
-      fig1 = vector_functions.tv_fold_model(tensor, True, None, plotType, userInputDataFrame)
-    return '', html.Div(children=[dcc.Graph(figure=fig1)], style={'text-align': 'center', 'top':'15px', 'max-height':'1000px', 'min-width':'1600px'}), '', tensor
-
-
-  if changed_id == 'fold-model-tabs-div.value' and folds_tab == 'fold-model-tab-8':
-    plotType = '3DVS1'
-    print('in 3d vs1 fold tab')
-    if int(tensor) < 96:
-      fig1 = vector_functions.tv_fold_model(tensor, False, None, plotType)
-    if int(tensor) >= 96:
-      print('this is the tensor number', tensor)
-      fig1 = vector_functions.tv_fold_model(tensor, True, None, plotType, userInputDataFrame)
-    return '', html.Div(children=[dcc.Graph(figure=fig1)], style={'text-align': 'center', 'top':'15px', 'max-height':'1000px', 'min-width':'1600px'}), '', tensor
-
-
-  if changed_id == 'fold-model-tabs-div.value' and folds_tab == 'fold-model-tab-9':
-    plotType = '3DVS2'
-    print('in 3d vs2 fold tab')
-    if int(tensor) < 96:
-      fig1 = vector_functions.tv_fold_model(tensor, False, None, plotType)
-    if int(tensor) >= 96:
-      print('this is the tensor number', tensor)
-      fig1 = vector_functions.tv_fold_model(tensor, True, None, plotType, userInputDataFrame)
-    return '', html.Div(children=[dcc.Graph(figure=fig1)], style={'text-align': 'center', 'top':'15px', 'max-height':'1000px', 'min-width':'1600px'}), '', tensor
-
-
-  if changed_id == 'fold-model-tabs-div.value' and folds_tab == 'fold-model-tab-10':
-    plotType = '3DVPVS1'
-    print('in 3d vpvs1 fold tab')
-    if int(tensor) < 96:
-      fig1 = vector_functions.tv_fold_model(tensor, False, None, plotType)
-    if int(tensor) >= 96:
-      print('this is the tensor number')
-      fig1 = vector_functions.tv_fold_model(tensor, True, None, plotType, userInputDataFrame)
-    return '', html.Div(children=[dcc.Graph(figure=fig1)], style={'text-align': 'center', 'top':'15px', 'max-height':'1000px', 'min-width':'1600px'}), '', tensor
-
-
-
-
-
-
-
-  else:
-    return '', '', '', ''
+  # Default branch: velocity plot for the current tab (also covers initial page load)
+  plotType, is3D = TAB_PLOT_TYPES.get(tab, TAB_PLOT_TYPES['tab-2'])
+  fig = vector_functions.calculate_tensor_symmetries(
+      tensor, user_input,
+      None if is3D else plotType,
+      plotType if is3D else None,
+      userInputDataFrame)
+  return fig, '', '', tensor
 
 
 app.layout = html.Div([navbar,body])
