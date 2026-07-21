@@ -142,6 +142,7 @@ body = html.Div([
     children=[
               dcc.Dropdown(
               id='unit_selection_dropdown',
+              searchable=False,
               placeholder='Select Units',
               options=[{'label':'Pascal', 'value':'1'}, {'label':'Gigapascal', 'value':'2'}],
               style={'width':'213px'}
@@ -189,6 +190,8 @@ body = html.Div([
               html.Div(id='number_of_tensors_to_average_div', children=[
                 dcc.Dropdown(
                   id='number_of_tensors_to_average_dropdown',
+                searchable=False,
+                clearable=False,
                   placeholder = 'Select number of tensors to average',
                   options=average_selector,
                   value = 2,
@@ -199,6 +202,8 @@ body = html.Div([
               ),
               dcc.Dropdown(
                 id='select_average_tensor1',
+                searchable=False,
+                clearable=False,
                 options=tensor_selector,
                 value=1,
                 placeholder='Select Tensor 1...',
@@ -206,6 +211,8 @@ body = html.Div([
                 ),
               dcc.Dropdown(
                 id='select_average_tensor2',
+                searchable=False,
+                clearable=False,
                 options=tensor_selector,
                 placeholder='Select Tensor 2...',
                 value=1,
@@ -213,6 +220,8 @@ body = html.Div([
                 ),
               dcc.Dropdown(
                 id='select_average_tensor3',
+                searchable=False,
+                clearable=False,
                 options=tensor_selector,
                 placeholder='Select Tensor 3...',
                 value=1,
@@ -220,6 +229,8 @@ body = html.Div([
                 ),
               dcc.Dropdown(
                 id='select_average_tensor4',
+                searchable=False,
+                clearable=False,
                 options=tensor_selector,
                 placeholder='Select Tensor 4...',
                 value=1,
@@ -227,6 +238,8 @@ body = html.Div([
                 ),
               dcc.Dropdown(
                 id='select_average_tensor5',
+                searchable=False,
+                clearable=False,
                 options=tensor_selector,
                 placeholder='Select Tensor 5...',
                 value=1,
@@ -246,6 +259,8 @@ body = html.Div([
       html.Br(),
               dcc.Dropdown(
                 id='select_decomp_tensor1',
+                searchable=False,
+                clearable=False,
                 options=tensor_selector,
                 placeholder='Select Tensor...',
                 value = 1,
@@ -349,6 +364,8 @@ body = html.Div([
              children=[
                  dcc.Dropdown(
                   id='select_tensor',
+                searchable=False,
+                clearable=False,
                   options=tensor_selector,
                   placeholder='Select Tensor...',
                   value = 1,
