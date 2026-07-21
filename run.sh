@@ -7,14 +7,9 @@
 ### Gunicorn settings can be modified in order to fit system settings as necessary
 
 
-if [[ `basename "$PWD"` != "tvguide-aniso" ]]; then
-    if [[ ! -d "tvguide-aniso" ]]; then
-        git clone https://github.com/widi9545/tvguide-aniso
-    fi
-    cd tvguide-aniso
-fi
-
-export MINIFORGE_LOCATION=$(dirname ${BASH_SOURCE[0]})
+### This script lives in the repo root - always run from there, whatever the folder is named
+cd "$(dirname "${BASH_SOURCE[0]}")"
+export MINIFORGE_LOCATION=$PWD
 
 
 bash $MINIFORGE_LOCATION/build.sh
@@ -45,5 +40,8 @@ if [ -f "$PIDFILE" ]; then
     kill "$(cat "$PIDFILE")" 2>/dev/null
     rm -f "$PIDFILE"
 fi
+### Kill any other previous gunicorn instances
+pkill -f "gunicorn.*tvguide:server" 2>/dev/null
+sleep 1
 
 gunicorn -w 3 -t 6 -b "${TVGUIDE_BIND:-0.0.0.0:8000}" --pid "$PIDFILE" tvguide:server
