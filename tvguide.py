@@ -24,7 +24,7 @@ import vector_functions
 import plotly.express as px
 
 #external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-ciresitMapboxToken = 'pk.eyJ1IjoiY2lyZXNpdCIsImEiOiJjazgzbGpoY3oxY2swM2Z0bDd3djIwdXFlIn0.0Z8kTTE8dgSU27tsWOTCeg'
+ciresitMapboxToken = os.environ.get('MAPBOX_TOKEN', '')
 
 #app.css.append_css({"external_url": "static/stylesheet.css"})
 
@@ -750,7 +750,7 @@ def render_content(folds_tab, tab, button_nclicks, tensor, userInputDataFrame):
       fig1 = vector_functions.tv_fold_model(tensor, False, None, plotType)
     if int(tensor) > 96:
       print('this is the tensor number', tensor)
-      fig1 = vector_functions.tv_fold_model(tensor, True, plotType, None, userInputDataFrame)
+      fig1 = vector_functions.tv_fold_model(tensor, True, None, plotType, userInputDataFrame)
     return '', html.Div(children=[dcc.Graph(figure=fig1)], style={'text-align': 'center', 'top':'15px', 'max-height':'1000px', 'min-width':'1600px'}), '', tensor
 
 
@@ -761,7 +761,7 @@ def render_content(folds_tab, tab, button_nclicks, tensor, userInputDataFrame):
       fig1 = vector_functions.tv_fold_model(tensor, False, None, plotType)
     if int(tensor) >= 96:
       print('this is the tensor number', tensor)
-      fig1 = vector_functions.tv_fold_model(tensor, True, plotType, None, userInputDataFrame)
+      fig1 = vector_functions.tv_fold_model(tensor, True, None, plotType, userInputDataFrame)
     return '', html.Div(children=[dcc.Graph(figure=fig1)], style={'text-align': 'center', 'top':'15px', 'max-height':'1000px', 'min-width':'1600px'}), '', tensor
 
 
@@ -772,7 +772,7 @@ def render_content(folds_tab, tab, button_nclicks, tensor, userInputDataFrame):
       fig1 = vector_functions.tv_fold_model(tensor, False, None, plotType)
     if int(tensor) >= 96:
       print('this is the tensor number', tensor)
-      fig1 = vector_functions.tv_fold_model(tensor, True, plotType, None, userInputDataFrame)
+      fig1 = vector_functions.tv_fold_model(tensor, True, None, plotType, userInputDataFrame)
     return '', html.Div(children=[dcc.Graph(figure=fig1)], style={'text-align': 'center', 'top':'15px', 'max-height':'1000px', 'min-width':'1600px'}), '', tensor
 
 
@@ -783,7 +783,7 @@ def render_content(folds_tab, tab, button_nclicks, tensor, userInputDataFrame):
       fig1 = vector_functions.tv_fold_model(tensor, False, None, plotType)
     if int(tensor) >= 96:
       print('this is the tensor number', tensor)
-      ffig1 = vector_functions.tv_fold_model(tensor, True, plotType, None, userInputDataFrame)
+      fig1 = vector_functions.tv_fold_model(tensor, True, None, plotType, userInputDataFrame)
     return '', html.Div(children=[dcc.Graph(figure=fig1)], style={'text-align': 'center', 'top':'15px', 'max-height':'1000px', 'min-width':'1600px'}), '', tensor
 
 
@@ -794,7 +794,7 @@ def render_content(folds_tab, tab, button_nclicks, tensor, userInputDataFrame):
       fig1 = vector_functions.tv_fold_model(tensor, False, None, plotType)
     if int(tensor) >= 96:
       print('this is the tensor number')
-      fig1 = vector_functions.tv_fold_model(tensor, True, plotType, None, userInputDataFrame)
+      fig1 = vector_functions.tv_fold_model(tensor, True, None, plotType, userInputDataFrame)
     return '', html.Div(children=[dcc.Graph(figure=fig1)], style={'text-align': 'center', 'top':'15px', 'max-height':'1000px', 'min-width':'1600px'}), '', tensor
 
 
