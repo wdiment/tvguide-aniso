@@ -1428,10 +1428,10 @@ def tv_fold_model(tensor_index, user_input=False, plotType=None, plotType3D=None
     print(user_input)
     if user_input == True:
         tensorDF = returnedUserInputDataFrame
-        tensorList = (tensorDF.iloc[tensorIndex, 3:25])
+        tensorList = (tensorDF.iloc[tensorIndex, 4:25])
         rho = (tensorDF.iloc[tensorIndex, 3])
     else:
-        tensorList = (tensorDF.iloc[tensorIndex-1, 3:25])
+        tensorList = (tensorDF.iloc[tensorIndex-1, 4:25])
         rho = (tensorDF.iloc[tensorIndex-1, 3])
     print(tensorList)
     rho = float(rho)
@@ -2638,23 +2638,23 @@ def tv_averaging(t1=None, t2=None, t3=None, t4=None, t5=None, user_input=False, 
         Rhos = np.zeros((5,1), dtype=float)
         print(tensors_to_average)
         for i in range(0,numberOfTensorsToAverage):
-            for j in range(3,24):
-                Cijs[i,j-3] = tensorDF.iloc[tensors_to_average[i]+1,j]
+            for j in range(4,25):
+                Cijs[i,j-4] = tensorDF.iloc[tensors_to_average[i]+1,j]
         for i in range(0,numberOfTensorsToAverage):
-            for j in range(2,3):
-                Rhos[i,j-2] = tensorDF.iloc[tensors_to_average[i]+1,j]
+            for j in range(3,4):
+                Rhos[i,j-3] = tensorDF.iloc[tensors_to_average[i]+1,j]
 
     else:
         Cijs = np.zeros((5,21), dtype=float)
         Rhos = np.zeros((5,1), dtype=float)
 
         for i in range(0,numberOfTensorsToAverage):
-            for j in range(3,24):
-                Cijs[i,j-3] = tensorDF.iloc[tensors_to_average[i],j]
+            for j in range(4,25):
+                Cijs[i,j-4] = tensorDF.iloc[tensors_to_average[i],j]
 
         for i in range(0,numberOfTensorsToAverage):
-            for j in range(2,3):
-                Rhos[i,j-2] = tensorDF.iloc[tensors_to_average[i],j]   
+            for j in range(3,4):
+                Rhos[i,j-3] = tensorDF.iloc[tensors_to_average[i],j]
 
 
 
@@ -2685,11 +2685,11 @@ def tv_averaging(t1=None, t2=None, t3=None, t4=None, t5=None, user_input=False, 
     for i in range(0,5):
         C = Cijs[i,:]
         #all indicies below are subtracted by 1 for indexing purposes
-        tensorsV[i] = [[C[0], C[1], C[2], C[3], C[4], C[5]], 
-        [C[1], C[2],C[3],C[4], C[5],C[6]], 
-        [C[2], C[7], C[11], C[12], C[13], C[14]], 
-        [C[3], C[8], C[12], C[15], C[16],C[17]],
-        [C[4], C[9], C[13], C[16], C[19],C[20]],
+        tensorsV[i] = [[C[0], C[1], C[2], C[3], C[4], C[5]],
+        [C[1], C[6], C[7], C[8], C[9], C[10]],
+        [C[2], C[7], C[11], C[12], C[13], C[14]],
+        [C[3], C[8], C[12], C[15], C[16], C[17]],
+        [C[4], C[9], C[13], C[16], C[18], C[19]],
         [C[5], C[10], C[14], C[17], C[19], C[20]]
         ]
         tensorsV[i] = np.asarray(tensorsV[i])
