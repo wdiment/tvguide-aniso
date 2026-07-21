@@ -2,3 +2,9 @@ tensor_scripts_info
 NSFProject
 .miniforge3
 tvguide
+__pycache__/
+*.pyc
+*.bak
+.env
+tvguide.pid
+.claude/
