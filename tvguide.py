@@ -54,17 +54,50 @@ average_selector = [{'label': i, 'value': i} for i in range(2,6)]
 
 dataButtonStyle={'padding':'5x', 'text-align': 'center', 'line-height':'5'}
 
+velocity_tab_labels = [
+  ('Vp', 'tab-2'),
+  ('Vs1', 'tab-3'),
+  ('Vs2', 'tab-4'),
+  ('VP/VS1', 'tab-13'),
+  ('Vs1 Polarization & splitting time', 'tab-1'),
+  ('3D Quiver Plot/VS1', 'tab-5'),
+  ('VP Fig 3D Plot', 'tab-6'),
+  ('VS1 3D Plot', 'tab-7'),
+  ('VS2 3D Plot', 'tab-8'),
+  ('VP/VS1 3D Plot', 'tab-9'),
+  ('Back Azimuthal Plot', 'tab-10'),
+  ('Radial Plots', 'tab-11'),
+]
+
+fold_tab_labels = [
+  ('Vp', 'fold-model-tab-2'),
+  ('Vs1', 'fold-model-tab-3'),
+  ('Vs2', 'fold-model-tab-4'),
+  ('VpVs1', 'fold-model-tab-5'),
+  ('Vs1 Polarization & splitting time', 'fold-model-tab-1'),
+  ('3D Quiver Plot/VS1', 'fold-model-tab-6'),
+  ('VP Fig 3D Plot', 'fold-model-tab-7'),
+  ('VS1 3D Plot', 'fold-model-tab-8'),
+  ('VS2 3D Plot', 'fold-model-tab-9'),
+  ('VP/VS1 3D Plot', 'fold-model-tab-10'),
+]
+
 
 navbar = html.Nav(
           className="top-bar fixed",
           children=[
             html.Div([
               html.A(
-                  href="https://cires.colorado.edu"
+                  href="https://cires.colorado.edu",
+                  children=html.Img(src='assets/cireslogo.png', className='navbar-logo')
+                  ),
+              html.A(
+                  href="https://www.noaa.gov",
+                  children=html.Img(src='assets/noaalogo.png', className='navbar-logo')
                   )],
               style={'background-color': 'white',
                      'width': '600px',
-                     'position': 'center',
+                     'text-align': 'center',
                      'float': 'right',
                      'margin-right': '-3px',
                      'margin-top': '-5px',
@@ -438,32 +471,13 @@ body = html.Div([
     html.Br(),
         html.Div([
           html.H4(id='tool-title-display', children='Current Tool: Visualize Velocities'),
-          dcc.Tabs(id='tabs-div', style={'display':'none'},   children=[
-            dcc.Tab(label='Vp', value='tab-2'),
-            dcc.Tab(label='Vs1', value='tab-3'),
-            dcc.Tab(label='Vs2', value='tab-4'),
-            dcc.Tab(label='VP/VS1', value='tab-13'),
-            dcc.Tab(label='Vs1 Polarization & splitting time', value='tab-1', className='tooltiptext'),
-            dcc.Tab(label='3D Quiver Plot/VS1', value='tab-5'),
-            dcc.Tab(label='VP Fig 3D Plot', value='tab-6'),
-            dcc.Tab(label='VS1 3D Plot', value='tab-7'),
-            dcc.Tab(label='VS2 3D Plot', value='tab-8'),
-            dcc.Tab(label='VP/VS1 3D Plot', value='tab-9'),
-            dcc.Tab(label='Back Azimuthal Plot', value='tab-10'),
-            dcc.Tab(label='Radial Plots', value='tab-11'),
+          dcc.Tabs(id='tabs-div', value='tab-2', style={'display':'none'},   children=[
+            dcc.Tab(label=label, value=value, className='custom-tab', selected_className='custom-tab--selected')
+            for label, value in velocity_tab_labels
           ]),
           dcc.Tabs(id='fold-model-tabs-div',  style={'display':'none'},   children=[
-            dcc.Tab(label='Vp', value='fold-model-tab-2'),
-            dcc.Tab(label='Vs1', value='fold-model-tab-3'),
-            dcc.Tab(label='Vs2', value='fold-model-tab-4'),
-            dcc.Tab(label='VpVs1', value='fold-model-tab-5'),
-            dcc.Tab(label='Vs1 Polarization & splitting time', value='fold-model-tab-1'),
-            dcc.Tab(label='3D Quiver Plot/VS1', value='fold-model-tab-6'),
-            dcc.Tab(label='VP Fig 3D Plot', value='fold-model-tab-7'),
-            dcc.Tab(label='VS1 3D Plot', value='fold-model-tab-8'),
-            dcc.Tab(label='VS2 3D Plot', value='fold-model-tab-9'),
-            dcc.Tab(label='VP/VS1 3D Plot', value='fold-model-tab-10'),
-
+            dcc.Tab(label=label, value=value, className='custom-tab', selected_className='custom-tab--selected')
+            for label, value in fold_tab_labels
           ]),
        html.Div(id='json_hidden_table', children=[
            dcc.Loading(
