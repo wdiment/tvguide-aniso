@@ -44,4 +44,4 @@ fi
 pkill -f "gunicorn.*tvguide:server" 2>/dev/null
 sleep 1
 
-gunicorn -w 3 -t 6 -b "${TVGUIDE_BIND:-0.0.0.0:8000}" --pid "$PIDFILE" tvguide:server
+gunicorn -w 3 -t 6 --timeout 90 -b "${TVGUIDE_BIND:-0.0.0.0:8000}" --pid "$PIDFILE" tvguide:server

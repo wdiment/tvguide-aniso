@@ -41,5 +41,5 @@ source $CONDA_PROFILE
 echo "Using $CONDA_EXE to create $VENV_NAME ."
 conda create --prefix $VENV_NAME python=3.11 --yes
 conda activate $PWD/$VENV_NAME
-mamba install pandas=1.5.3 numpy scipy dash dash-bootstrap-components gunicorn matplotlib iteration_utilities --yes
+mamba install pandas=1.5.3 numpy scipy dash=4.4.0 dash-bootstrap-components gunicorn matplotlib iteration_utilities --yes
 exit 0 
