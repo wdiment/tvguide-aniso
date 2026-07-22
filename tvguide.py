@@ -475,7 +475,7 @@ body = html.Div([
             dcc.Tab(label=label, value=value, className='custom-tab', selected_className='custom-tab--selected')
             for label, value in velocity_tab_labels
           ]),
-          dcc.Tabs(id='fold-model-tabs-div',  style={'display':'none'},   children=[
+          dcc.Tabs(id='fold-model-tabs-div', value='fold-model-tab-1', style={'display':'none'},   children=[
             dcc.Tab(label=label, value=value, className='custom-tab', selected_className='custom-tab--selected')
             for label, value in fold_tab_labels
           ]),
@@ -493,7 +493,7 @@ body = html.Div([
               type='default',
               children=html.Div(id='loading-output-1')
             ),
-            dcc.Graph(id='graph-display', figure='')
+            dcc.Graph(id='graph-display', figure={})
           ], style={'margin-top':'50px','overflow':'scroll'}),
           html.Div(id='fold-model-display', children=[], style={'margin-top':'50px','overflow':'scroll'})
           
@@ -609,7 +609,8 @@ State(component_id='database_dataframe_user_input', component_property='children
 ]
 )
 def render_content(folds_tab, tab, button_nclicks, tensor, userInputDataFrame):
-  changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+  triggered = [p['prop_id'] for p in dash.callback_context.triggered]
+  changed_id = triggered[0] if triggered else '.'
   print('this is changed id in the render_content tool', changed_id, 'this is the tab', tab)
 
   tensor = int(tensor)
@@ -623,7 +624,7 @@ def render_content(folds_tab, tab, button_nclicks, tensor, userInputDataFrame):
         plotType if is3D else None,
         userInputDataFrame)
     foldGraph = html.Div(children=[dcc.Graph(figure=fig)], style=FOLD_GRAPH_STYLE)
-    return '', foldGraph, '', tensor
+    return {}, foldGraph, '', tensor
 
   # Default branch: velocity plot for the current tab (also covers initial page load)
   plotType, is3D = TAB_PLOT_TYPES.get(tab, TAB_PLOT_TYPES['tab-2'])

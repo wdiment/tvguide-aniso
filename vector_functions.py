@@ -1,4 +1,5 @@
 import os 
+import json
 import numpy as np
 import math
 import statistics as stats
@@ -3466,6 +3467,8 @@ def print_csv_table(databaseFrame = None, rowAddition=None):
     dbFile = pd.read_csv(fileLoc, names=columnNames, sep=',', engine='python')
     dbFrame = pd.DataFrame(data=dbFile, columns=columnNames)
     if rowAddition != None:
+        if isinstance(databaseFrame, str):
+            databaseFrame = json.loads(databaseFrame)
         databaseFrame = pd.DataFrame.from_dict(databaseFrame)
         databaseFrame = databaseFrame.append(rowAddition, ignore_index=True)
         #databaseFrame = databaseFrame.({"density (g/cm3)": float, "C11 (Mbar)": float})
@@ -3498,7 +3501,7 @@ def print_csv_table(databaseFrame = None, rowAddition=None):
     )
     
     #print(dbFrame)
-    return dbDataTable, dbFrame.to_dict()
+    return dbDataTable, dbFrame.to_json()
 
 
 
@@ -3648,6 +3651,8 @@ def print_ortho_decomp(ortho=None):
 
 def returnUserInputDataFrame(databaseFrame = None):
     
+    if isinstance(databaseFrame, str):
+        databaseFrame = json.loads(databaseFrame)
     databaseFrame = pd.DataFrame.from_dict(databaseFrame)
     dbFrame = databaseFrame
     return dbFrame
